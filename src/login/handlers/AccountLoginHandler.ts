@@ -2,22 +2,68 @@ import {
   PacketHandler,
   PacketHandlerCallback,
 } from "../../core/network/PacketHandler";
-import { PacketWriter } from "../../core/network/PacketWriter";
+
 import { LoginClientOpcode } from "../constants/LoginClientOpcode";
+import {
+  loginFailed,
+  loginSuccess,
+  LoginResult,
+} from "../packets/AccountLoginPacket";
+
+import {
+  checkPassword,
+  createAccount,
+  findAccountByUsername,
+} from "../services/AccountService";
+
+import loginServerConfig from "../../config/loginserver.config.json";
 
 export default class AccountLoginHandler extends PacketHandler {
-  public opcode = LoginClientOpcode.AccountLogin;
+  public static opcode = [LoginClientOpcode.AccountLogin];
 
-  public handlePacket: PacketHandlerCallback = (client, packet) => {
+  public static handlePacket: PacketHandlerCallback = async (
+    client,
+    packet,
+  ) => {
     const username = packet.readString();
     const password = packet.readString();
 
-    console.log({ username, password });
+    let account;
+    try {
+      account = await findAccountByUsername(username);
+    } catch (err) {
+      console.error(err);
+    }
 
-    const writer = new PacketWriter(0x0000);
-    writer.writeUInt16(5);
-    writer.writeUInt32(0);
+    // Account was not found
+    if (!account) {
+      // If auto register is enabled, automatically create account for them
+      // Otherwise return invalid password
+      // We do not want to expose that it is a valid username even when it's not.
+      if (loginServerConfig.enableAutoRegister) {
+        // Attempt to create a new account
+        try {
+          account = await createAccount(username, password);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
 
-    client.sendPacket(writer);
+    // Earlier we attempted to create a user account.
+    // If there is still no account at this point, return invalid password.
+    if (!account) {
+      return client.sendPacket(loginFailed(LoginResult.InvalidPassword));
+    }
+
+    // Check plaintext password against hashed password
+    const isPasswordValid = await checkPassword(password, account.password);
+    if (!isPasswordValid) {
+      return client.sendPacket(loginFailed(LoginResult.InvalidPassword));
+    }
+
+    // Account looks to be good to login!
+    console.log(`User logged in: ${account.username}`);
+    return client.sendPacket(loginSuccess(account));
   };
 }

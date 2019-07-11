@@ -1,18 +1,10 @@
 import fs from "fs";
+
 import net from "net";
 import path from "path";
 
 import { Client } from "../core/Client";
-
-import {
-  decryptData,
-  getPacketLength,
-  morphIV,
-} from "../core/network/PacketCrypto";
-import { PacketHandler } from "../core/network/PacketHandler";
 import { PacketHandlerManager } from "../core/network/PacketHandlerManager";
-import { PacketReader } from "../core/network/PacketReader";
-import { PacketWriter } from "../core/network/PacketWriter";
 
 import loginServerConfig from "../config/loginserver.config.json";
 import serverConfig from "../config/server.config.json";
@@ -22,8 +14,6 @@ export class LoginServer {
 
   constructor() {
     this.packetHandlerManager = new PacketHandlerManager();
-
-    this.assignPacketHandlers();
   }
 
   public start() {
@@ -32,32 +22,22 @@ export class LoginServer {
     const { version, subversion, locale } = serverConfig;
     const { port } = loginServerConfig;
 
+    this.assignPacketHandlers();
+
     const server = net.createServer((socket) => {
       console.log("Client connected.");
 
       const client = new Client(socket);
 
-      const headerLength = 4;
-      let ponged = true;
-
-      socket.on("data", (receivedData) => {
+      socket.on("data", (packet) => {
         socket.pause();
 
-        const header = receivedData.slice(0, headerLength);
-        const packetLength = getPacketLength(header);
+        const reader = client.readPacket(packet);
 
-        if (packetLength > 0) {
-          const block = receivedData.slice(headerLength);
-
-          const data = decryptData(block, client.getLocalIV());
-          client.setLocalIV(morphIV(client.getLocalIV()));
-
-          const reader = new PacketReader(data);
+        if (reader) {
           const opcode = reader.readUInt16();
-
           const handler = this.packetHandlerManager.getHandler(opcode);
 
-          console.log(`[RECV]`, data);
           try {
             handler(client, reader);
           } catch (err) {
@@ -80,16 +60,7 @@ export class LoginServer {
         console.log("Client errored.", error);
       });
 
-      // Send handshake
-      const packet = new PacketWriter();
-      packet.writeUInt16(2 + 2 + subversion.length + 4 + 4 + 1);
-      packet.writeUInt16(version);
-      packet.writeString(subversion);
-      packet.writeBytes(client.getLocalIV());
-      packet.writeBytes(client.getRemoteIV());
-      packet.writeUInt8(locale);
-
-      socket.write(packet.getBuffer());
+      client.sendHandshake();
     });
 
     server.listen(port, () => {
@@ -105,12 +76,7 @@ export class LoginServer {
 
       const Handler = await import(handlerPath);
 
-      const handler: PacketHandler = new Handler.default();
-
-      this.packetHandlerManager.assignHandler(
-        handler.opcode,
-        handler.handlePacket,
-      );
+      this.packetHandlerManager.assignHandler(Handler.default);
     });
   }
 }

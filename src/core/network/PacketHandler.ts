@@ -3,8 +3,8 @@ import { ClientPacketOpcode } from "./ClientPacketOpcode";
 import { PacketReader } from "./PacketReader";
 
 export abstract class PacketHandler {
-  public abstract readonly opcode: ClientPacketOpcode;
-  public abstract handlePacket: PacketHandlerCallback;
+  public static readonly opcode: ClientPacketOpcode[] = [];
+  public static readonly handlePacket: PacketHandlerCallback;
 }
 
 export type PacketHandlerCallback = (

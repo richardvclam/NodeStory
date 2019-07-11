@@ -15,19 +15,23 @@ export class PacketHandlerManager {
       return this.handlers[opcode!];
     }
 
-    return new NotFoundHandler().handlePacket;
+    return NotFoundHandler.handlePacket;
   }
 
-  public assignHandler(
-    opcode: ClientPacketOpcode,
-    handler: PacketHandlerCallback,
-  ): void {
-    if (typeof this.handlers[opcode!] !== "undefined") {
-      console.warn(
-        "Warning: Attempting to assign handler to an existing opcode.",
-      );
-    }
+  public assignHandler(handler: PacketHandler): void {
+    const Handler = handler as typeof PacketHandler;
 
-    this.handlers[opcode!] = handler;
+    for (let i = 0, len = Handler.opcode.length; i < len; i++) {
+      const opcode = Handler.opcode[i];
+
+      if (typeof this.handlers[opcode!] !== "undefined") {
+        console.warn(
+          "Warning: Attempting to assign handler to an existing opcode.",
+          { opcode, Handler },
+        );
+      }
+
+      this.handlers[opcode!] = Handler.handlePacket;
+    }
   }
 }

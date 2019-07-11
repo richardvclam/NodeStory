@@ -1,5 +1,6 @@
+import cryptoConfig from "../../config/crypto.config.json";
 import * as AESEncryption from "../security/AESEncryption";
-import * as MapleEncryption from "../security/MapleEncryption";
+import * as ShandaEncryption from "../security/ShandaEncryption";
 
 export function getPacketLength(header: Buffer): number {
   const length =
@@ -26,13 +27,19 @@ export function generateHeader(
 }
 
 export function encryptData(data: Buffer, iv: Uint8Array): Buffer {
-  const encryptedData = MapleEncryption.encrypt(data);
+  const encryptedData = cryptoConfig.enableShandaEncryption
+    ? ShandaEncryption.encrypt(data)
+    : data;
+
   return AESEncryption.transform(encryptedData, iv);
 }
 
 export function decryptData(data: Buffer, iv: Uint8Array): Buffer {
   const transformedData = AESEncryption.transform(data, iv);
-  return MapleEncryption.decrypt(transformedData);
+
+  return cryptoConfig.enableShandaEncryption
+    ? ShandaEncryption.decrypt(transformedData)
+    : transformedData;
 }
 
 export function morphIV(iv: Uint8Array): Uint8Array {

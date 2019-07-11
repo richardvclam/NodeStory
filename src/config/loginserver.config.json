@@ -1,3 +1,4 @@
 {
-  "port": 8484
+  "port": 8484,
+  "enableAutoRegister": true
 }

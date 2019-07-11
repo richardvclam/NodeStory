@@ -33,5 +33,6 @@
     0,
     0
   ],
-  "aesAlgorithm": "aes-256-ecb"
+  "aesAlgorithm": "aes-256-ecb",
+  "enableShandaEncryption": true
 }

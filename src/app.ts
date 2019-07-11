@@ -1,5 +1,15 @@
+import mongoose from "mongoose";
+
 import { LoginServer } from "./login/LoginServer";
 
-console.log("Starting MapleServer");
+import databaseConfig from "./config/database.config.json";
 
-new LoginServer().start();
+console.log("Starting NodeStory");
+
+mongoose.connect(databaseConfig.url, { useNewUrlParser: true });
+mongoose.connection.on("open", () => {
+  console.log("Connected to database.");
+
+  // Start servers only after database connection
+  new LoginServer().start();
+});

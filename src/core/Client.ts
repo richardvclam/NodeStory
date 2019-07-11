@@ -1,9 +1,16 @@
 import crypto from "crypto";
 import { Socket } from "net";
-import { encryptData, generateHeader, morphIV } from "./network/PacketCrypto";
+import {
+  decryptData,
+  encryptData,
+  generateHeader,
+  getPacketLength,
+  morphIV,
+} from "./network/PacketCrypto";
 import { PacketWriter } from "./network/PacketWriter";
 
 import serverConfig from "../config/server.config.json";
+import { PacketReader } from "./network/PacketReader";
 
 export class Client {
   private socket: Socket;
@@ -18,20 +25,25 @@ export class Client {
     this.remoteIV = new Uint8Array(crypto.randomBytes(4));
   }
 
-  public getLocalIV(): Uint8Array {
-    return this.localIV;
-  }
+  public readPacket(packet: Buffer): PacketReader | null {
+    const headerLength = 4;
+    const header = packet.slice(0, headerLength);
+    const packetLength = getPacketLength(header);
 
-  public setLocalIV(iv: Uint8Array): void {
-    this.localIV = iv;
-  }
+    if (packetLength === 0) {
+      return null;
+    }
 
-  public getRemoteIV(): Uint8Array {
-    return this.remoteIV;
-  }
+    const block = packet.slice(headerLength);
 
-  public setRemoteIV(iv: Uint8Array): void {
-    this.remoteIV = iv;
+    const data = decryptData(block, this.localIV);
+    this.localIV = morphIV(this.localIV);
+
+    console.log(`[RECV]`, data);
+
+    const reader = new PacketReader(data);
+
+    return reader;
   }
 
   public sendPacket(packet: PacketWriter): void {
@@ -46,9 +58,38 @@ export class Client {
     console.log("[SEND]", buffer);
 
     const data = encryptData(buffer, this.remoteIV);
-
     this.remoteIV = morphIV(this.remoteIV);
 
     this.socket.write(data);
+  }
+
+  public sendHandshake(): void {
+    const { version, subversion, locale } = serverConfig;
+
+    const writer = new PacketWriter();
+    writer.writeUInt16(2 + 2 + subversion.length + 4 + 4 + 1);
+    writer.writeUInt16(version);
+    writer.writeString(subversion);
+    writer.writeBytes(this.localIV);
+    writer.writeBytes(this.remoteIV);
+    writer.writeUInt8(locale);
+
+    this.socket.write(writer.getBuffer());
+  }
+
+  private getLocalIV(): Uint8Array {
+    return this.localIV;
+  }
+
+  private setLocalIV(iv: Uint8Array): void {
+    this.localIV = iv;
+  }
+
+  private getRemoteIV(): Uint8Array {
+    return this.remoteIV;
+  }
+
+  private setRemoteIV(iv: Uint8Array): void {
+    this.remoteIV = iv;
   }
 }

@@ -2,9 +2,9 @@ import { ClientPacketOpcode } from "../network/ClientPacketOpcode";
 import { PacketHandler, PacketHandlerCallback } from "../network/PacketHandler";
 
 export default class NotFoundHandler extends PacketHandler {
-  public opcode: ClientPacketOpcode = null;
+  public static opcode = [];
 
-  public handlePacket: PacketHandlerCallback = (client, packet) => {
+  public static handlePacket: PacketHandlerCallback = (client, packet) => {
     console.log("Unhandled packet", packet);
   };
 }

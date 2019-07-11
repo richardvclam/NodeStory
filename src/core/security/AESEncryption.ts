@@ -7,6 +7,11 @@ const cipher = createCipheriv(cryptoConfig.aesAlgorithm, aesKey, "");
 
 export function transform(data: Buffer, iv: Uint8Array): Buffer {
   const { length } = data;
+
+  // MapleStory's 1460 byte block
+  const blockLength = 1460;
+  let currentBlockLength = 1456;
+
   const ivCopy = Buffer.from([
     iv[0],
     iv[1],
@@ -27,8 +32,9 @@ export function transform(data: Buffer, iv: Uint8Array): Buffer {
   ]);
 
   for (let i = 0; i < length; ) {
-    const block = Math.min(length - i, i === 0 ? 1456 : 1460);
+    const block = Math.min(length - i, currentBlockLength);
 
+    // Get a new copy of the key
     let xorKey = ivCopy.slice();
 
     for (let j = 0; j < block; j++) {
@@ -40,6 +46,7 @@ export function transform(data: Buffer, iv: Uint8Array): Buffer {
     }
 
     i += block;
+    currentBlockLength = blockLength;
   }
 
   return data;

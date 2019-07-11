@@ -1,8 +1,10 @@
+import { ServerPacketOpcode } from "./ServerPacketOpcode";
+
 export class PacketWriter {
   private buffer: Buffer;
   private offset: number;
 
-  constructor(opcode?: number) {
+  constructor(opcode?: ServerPacketOpcode) {
     this.buffer = Buffer.alloc(32);
     this.offset = 0;
 
@@ -35,6 +37,14 @@ export class PacketWriter {
     return this;
   }
 
+  public writeInt64(value: bigint): PacketWriter {
+    this.realloc(8);
+    this.buffer.writeBigInt64LE(value, this.offset);
+    this.offset += 8;
+
+    return this;
+  }
+
   public writeUInt8(value: number): PacketWriter {
     this.realloc(1);
     this.buffer.writeUInt8(value, this.offset);
@@ -55,6 +65,20 @@ export class PacketWriter {
     this.realloc(4);
     this.buffer.writeUInt32LE(value, this.offset);
     this.offset += 4;
+
+    return this;
+  }
+
+  public writeUInt64(value: bigint): PacketWriter {
+    this.realloc(8);
+    this.buffer.writeBigUInt64LE(value, this.offset);
+    this.offset += 8;
+
+    return this;
+  }
+
+  public writeDate(date: Date): PacketWriter {
+    this.writeUInt64(BigInt(date.getUTCMilliseconds()));
 
     return this;
   }
