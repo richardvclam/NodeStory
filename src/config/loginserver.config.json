@@ -1,4 +1,18 @@
 {
   "port": 8484,
-  "enableAutoRegister": true
+  "enableAutoRegister": true,
+  "worlds": [
+    {
+      "id": 0,
+      "name": "Scania",
+      "privateIP": "127.0.0.1",
+      "publicIP": "127.0.0.1",
+      "portStart": 8500,
+      "ribbon": 2,
+      "channels": 1,
+      "eventMessage": "",
+      "dialogs": [],
+      "disableCharacterCreation": false
+    }
+  ]
 }

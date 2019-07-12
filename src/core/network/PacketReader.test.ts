@@ -34,7 +34,7 @@ const failedLoginResponse = [
 test("should read packet and return opcode 0x01", () => {
   const reader = new PacketReader(Buffer.from([0x01, 0x00]));
 
-  const opcode = reader.readUInt16();
+  const opcode = reader.readUShort();
 
   expect(opcode).toBe(1);
 });
@@ -42,7 +42,7 @@ test("should read packet and return opcode 0x01", () => {
 test("read packet should return opcode, username, and password", () => {
   const reader = new PacketReader(Buffer.from(failedLoginResponse));
 
-  const opcode = reader.readUInt16();
+  const opcode = reader.readUShort();
   const username = reader.readString();
 
   expect(username).toBe("test");

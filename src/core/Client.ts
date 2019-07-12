@@ -4,13 +4,12 @@ import {
   decryptData,
   encryptData,
   generateHeader,
-  getPacketLength,
   morphIV,
 } from "./network/PacketCrypto";
+import { PacketReader } from "./network/PacketReader";
 import { PacketWriter } from "./network/PacketWriter";
 
 import serverConfig from "../config/server.config.json";
-import { PacketReader } from "./network/PacketReader";
 
 export class Client {
   private socket: Socket;
@@ -26,9 +25,12 @@ export class Client {
   }
 
   public readPacket(packet: Buffer): PacketReader | null {
+    if (packet.length === 0) {
+      return null;
+    }
+
     const headerLength = 4;
-    const header = packet.slice(0, headerLength);
-    const packetLength = getPacketLength(header);
+    const packetLength = packet.length - headerLength;
 
     if (packetLength === 0) {
       return null;
@@ -47,10 +49,9 @@ export class Client {
   }
 
   public sendPacket(packet: PacketWriter): void {
-    const header = Buffer.alloc(4);
     const { version } = serverConfig;
 
-    generateHeader(header, this.remoteIV, packet.getOffset(), -(version + 1));
+    const header = generateHeader(this.remoteIV, packet.getOffset(), version);
 
     this.socket.write(header);
 
@@ -67,12 +68,12 @@ export class Client {
     const { version, subversion, locale } = serverConfig;
 
     const writer = new PacketWriter();
-    writer.writeUInt16(2 + 2 + subversion.length + 4 + 4 + 1);
-    writer.writeUInt16(version);
+    writer.writeUShort(2 + 2 + subversion.length + 4 + 4 + 1);
+    writer.writeUShort(version);
     writer.writeString(subversion);
     writer.writeBytes(this.localIV);
     writer.writeBytes(this.remoteIV);
-    writer.writeUInt8(locale);
+    writer.writeUByte(locale);
 
     this.socket.write(writer.getBuffer());
   }

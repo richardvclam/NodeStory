@@ -10,7 +10,7 @@ test("packet without opcode should return empty buffer", () => {
 
 test("packet without opcode and write two bytes with value 14 should return [0x0E, 0x00]", () => {
   const packet = new PacketWriter();
-  packet.writeUInt16(14);
+  packet.writeUShort(14);
 
   const expectedBuf = [0x0e, 0x00];
 
@@ -19,7 +19,7 @@ test("packet without opcode and write two bytes with value 14 should return [0x0
 
 test("packet without opcode and write four bytes with value 14 should return [0x0E, 0x00, 0x00, 0x00]", () => {
   const packet = new PacketWriter();
-  packet.writeUInt32(14);
+  packet.writeUInt(14);
 
   const expectedBuf = [0x0e, 0x00, 0x00, 0x00];
 
@@ -28,7 +28,7 @@ test("packet without opcode and write four bytes with value 14 should return [0x
 
 test("packet without opcode and write four bytes with value 1,458,854,438 should return [0x26, 0x5a, 0xf4, 0x56]", () => {
   const packet = new PacketWriter();
-  packet.writeUInt32(1458854438);
+  packet.writeUInt(1458854438);
 
   const expectedBuf = [0x26, 0x5a, 0xf4, 0x56];
 

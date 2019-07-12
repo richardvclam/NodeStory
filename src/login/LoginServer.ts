@@ -35,7 +35,7 @@ export class LoginServer {
         const reader = client.readPacket(packet);
 
         if (reader) {
-          const opcode = reader.readUInt16();
+          const opcode = reader.readUShort();
           const handler = this.packetHandlerManager.getHandler(opcode);
 
           try {

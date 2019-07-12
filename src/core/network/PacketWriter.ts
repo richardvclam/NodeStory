@@ -9,11 +9,11 @@ export class PacketWriter {
     this.offset = 0;
 
     if (typeof opcode !== "undefined" && opcode !== null) {
-      this.writeUInt16(opcode!);
+      this.writeUShort(opcode!);
     }
   }
 
-  public writeInt8(value: number): PacketWriter {
+  public writeByte(value: number): PacketWriter {
     this.realloc(1);
     this.buffer.writeInt8(value, this.offset);
     this.offset += 1;
@@ -21,7 +21,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeInt16(value: number): PacketWriter {
+  public writeShort(value: number): PacketWriter {
     this.realloc(2);
     this.buffer.writeInt16LE(value, this.offset);
     this.offset += 2;
@@ -29,7 +29,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeInt32(value: number): PacketWriter {
+  public writeInt(value: number): PacketWriter {
     this.realloc(4);
     this.buffer.writeInt32LE(value, this.offset);
     this.offset += 4;
@@ -37,7 +37,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeInt64(value: bigint): PacketWriter {
+  public writeLong(value: bigint): PacketWriter {
     this.realloc(8);
     this.buffer.writeBigInt64LE(value, this.offset);
     this.offset += 8;
@@ -45,7 +45,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeUInt8(value: number): PacketWriter {
+  public writeUByte(value: number): PacketWriter {
     this.realloc(1);
     this.buffer.writeUInt8(value, this.offset);
     this.offset += 1;
@@ -53,7 +53,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeUInt16(value: number): PacketWriter {
+  public writeUShort(value: number): PacketWriter {
     this.realloc(2);
     this.buffer.writeUInt16LE(value, this.offset);
     this.offset += 2;
@@ -61,7 +61,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeUInt32(value: number): PacketWriter {
+  public writeUInt(value: number): PacketWriter {
     this.realloc(4);
     this.buffer.writeUInt32LE(value, this.offset);
     this.offset += 4;
@@ -69,7 +69,7 @@ export class PacketWriter {
     return this;
   }
 
-  public writeUInt64(value: bigint): PacketWriter {
+  public writeULong(value: bigint): PacketWriter {
     this.realloc(8);
     this.buffer.writeBigUInt64LE(value, this.offset);
     this.offset += 8;
@@ -78,7 +78,7 @@ export class PacketWriter {
   }
 
   public writeDate(date: Date): PacketWriter {
-    this.writeUInt64(BigInt(date.getUTCMilliseconds()));
+    this.writeULong(BigInt(date.getUTCMilliseconds()));
 
     return this;
   }
@@ -97,7 +97,7 @@ export class PacketWriter {
 
       this.offset += length;
     } else {
-      this.writeUInt16(value.length);
+      this.writeUShort(value.length);
 
       this.realloc(value.length);
       this.buffer.write(value, this.offset, value.length);
@@ -110,7 +110,7 @@ export class PacketWriter {
 
   public writeBytes(values: Uint8Array): PacketWriter {
     for (let i = 0, len = values.length; i < len; i++) {
-      this.writeUInt8(values[i]);
+      this.writeUByte(values[i]);
     }
 
     return this;

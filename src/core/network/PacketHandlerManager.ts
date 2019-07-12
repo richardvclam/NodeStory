@@ -21,8 +21,8 @@ export class PacketHandlerManager {
   public assignHandler(handler: PacketHandler): void {
     const Handler = handler as typeof PacketHandler;
 
-    for (let i = 0, len = Handler.opcode.length; i < len; i++) {
-      const opcode = Handler.opcode[i];
+    for (let i = 0, len = Handler.opcodes.length; i < len; i++) {
+      const opcode = Handler.opcodes[i];
 
       if (typeof this.handlers[opcode!] !== "undefined") {
         console.warn(

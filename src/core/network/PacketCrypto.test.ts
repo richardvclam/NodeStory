@@ -99,13 +99,6 @@ const decryptedLoginResponse = [
 
 const iv = new Uint8Array([0xff, 0x7d, 0x60, 0xf6]);
 
-test("packet length should return 28", () => {
-  const header = Buffer.from(encryptedLoginResponseWithHeader.slice(0, 4));
-  const len = PacketCrypto.getPacketLength(header);
-
-  expect(len).toBe(28);
-});
-
 test("packet should encrypt properly", () => {
   const block = Buffer.from(decryptedLoginResponse);
   const data = PacketCrypto.encryptData(block, iv);

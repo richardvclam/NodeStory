@@ -6,7 +6,10 @@ import databaseConfig from "./config/database.config.json";
 
 console.log("Starting NodeStory");
 
-mongoose.connect(databaseConfig.url, { useNewUrlParser: true });
+mongoose.connect(databaseConfig.url, {
+  useCreateIndex: true,
+  useNewUrlParser: true,
+});
 mongoose.connection.on("open", () => {
   console.log("Connected to database.");
 

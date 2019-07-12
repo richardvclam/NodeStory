@@ -2,28 +2,23 @@ import cryptoConfig from "../../config/crypto.config.json";
 import * as AESEncryption from "../security/AESEncryption";
 import * as ShandaEncryption from "../security/ShandaEncryption";
 
-export function getPacketLength(header: Buffer): number {
-  const length =
-    header[0] | (header[1] << 8) | (header[2] << 16) | (header[3] << 24);
-  return ((length >>> 16) ^ (length & 0xffff)) & 0xffff;
-}
-
 export function generateHeader(
-  data: Buffer,
   iv: Uint8Array,
   length: number,
   version: number,
 ): Buffer {
   let a = iv[2] | (iv[3] << 8);
-  a ^= version;
+
+  a ^= -(version + 1);
   const b = a ^ length;
 
-  data[0] = a & 0xff;
-  data[1] = (a >>> 8) & 0xff;
-  data[2] = b & 0xff;
-  data[3] = (b >>> 8) & 0xff;
-
-  return data;
+  const header = Buffer.from([
+    a & 0xff,
+    (a >>> 8) & 0xff,
+    b & 0xff,
+    (b >>> 8) & 0xff,
+  ]);
+  return header;
 }
 
 export function encryptData(data: Buffer, iv: Uint8Array): Buffer {

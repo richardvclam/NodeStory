@@ -1,8 +1,9 @@
 import { PacketWriter } from "../../core/network/PacketWriter";
-import { LoginServerOpcode } from "../constants/LoginServerOpcode";
 import { IAccountModel } from "../../models/Account";
 
-export enum LoginResult {
+import { LoginServerOpcode } from "../constants/LoginServerOpcode";
+
+export enum ELoginResult {
   Valid = 0,
   Banned = 3,
   InvalidPassword = 4,
@@ -13,31 +14,31 @@ export enum LoginResult {
 
 export function loginSuccess(account: IAccountModel) {
   const writer = new PacketWriter(LoginServerOpcode.LoginResult);
-  writer.writeUInt32(LoginResult.Valid);
-  writer.writeUInt16(0);
-  writer.writeUInt32(account._id);
-  writer.writeUInt8(0);
-  writer.writeUInt8(0); // Admin flag
-  writer.writeUInt8(0);
-  writer.writeUInt8(0);
+  writer.writeUInt(ELoginResult.Valid);
+  writer.writeUShort(0);
+  writer.writeUInt(account._id);
+  writer.writeUByte(0); // Gender
+  writer.writeUByte(account.isAdmin ? 1 : 0); // Admin flag grade code
+  writer.writeUByte(0); // Subgrade code
+  writer.writeUByte(0); // County code
   writer.writeString(account.username);
-  writer.writeUInt8(0);
-  writer.writeUInt8(0); // Mute reason
-  writer.writeDate(new Date()); // Mute reset date
+  writer.writeUByte(0);
+  writer.writeUByte(0); // Quiet ban reason
+  writer.writeDate(new Date()); // Quiet ban lift date
   writer.writeDate(account.createdAt); // Creation date
-  writer.writeUInt32(0);
+  writer.writeUInt(0);
 
   // Pic info
-  writer.writeUInt8(1); // true
-  writer.writeUInt8(1);
+  writer.writeUByte(1); // NOTE: 1 seems to not do anything.
+  writer.writeUByte(1);
 
   return writer;
 }
 
-export function loginFailed(result: LoginResult) {
+export function loginFailed(result: ELoginResult) {
   const writer = new PacketWriter(LoginServerOpcode.LoginResult);
-  writer.writeUInt32(result);
-  writer.writeUInt16(0);
+  writer.writeUInt(result);
+  writer.writeUShort(0);
 
   return writer;
 }

@@ -5,9 +5,9 @@ import {
 
 import { LoginClientOpcode } from "../constants/LoginClientOpcode";
 import {
+  ELoginResult,
   loginFailed,
   loginSuccess,
-  LoginResult,
 } from "../packets/AccountLoginPacket";
 
 import {
@@ -19,7 +19,7 @@ import {
 import loginServerConfig from "../../config/loginserver.config.json";
 
 export default class AccountLoginHandler extends PacketHandler {
-  public static opcode = [LoginClientOpcode.AccountLogin];
+  public static opcodes = [LoginClientOpcode.AccountLogin];
 
   public static handlePacket: PacketHandlerCallback = async (
     client,
@@ -53,13 +53,18 @@ export default class AccountLoginHandler extends PacketHandler {
     // Earlier we attempted to create a user account.
     // If there is still no account at this point, return invalid password.
     if (!account) {
-      return client.sendPacket(loginFailed(LoginResult.InvalidPassword));
+      return client.sendPacket(loginFailed(ELoginResult.InvalidPassword));
     }
 
     // Check plaintext password against hashed password
     const isPasswordValid = await checkPassword(password, account.password);
     if (!isPasswordValid) {
-      return client.sendPacket(loginFailed(LoginResult.InvalidPassword));
+      return client.sendPacket(loginFailed(ELoginResult.InvalidPassword));
+    }
+
+    // Account is already logged in
+    if (account.isOnline) {
+      return client.sendPacket(loginFailed(ELoginResult.LoggedIn));
     }
 
     // Account looks to be good to login!
