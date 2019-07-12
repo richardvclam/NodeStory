@@ -10,6 +10,7 @@ import { PacketReader } from "./network/PacketReader";
 import { PacketWriter } from "./network/PacketWriter";
 
 import serverConfig from "../config/server.config.json";
+import { Log } from "./utils/Log";
 
 export class Client {
   private socket: Socket;
@@ -41,7 +42,7 @@ export class Client {
     const data = decryptData(block, this.localIV);
     this.localIV = morphIV(this.localIV);
 
-    console.log(`[RECV]`, data);
+    Log.log("debug", `[RECV] ${data.toJSON().data} ${data.toString()}`);
 
     const reader = new PacketReader(data);
 
@@ -55,13 +56,13 @@ export class Client {
 
     this.socket.write(header);
 
-    const buffer = packet.getBuffer();
-    console.log("[SEND]", buffer);
+    const data = packet.getBuffer();
+    Log.log("debug", `[SEND] ${data.toJSON().data} ${data.toString()}`);
 
-    const data = encryptData(buffer, this.remoteIV);
+    const encryptedData = encryptData(data, this.remoteIV);
     this.remoteIV = morphIV(this.remoteIV);
 
-    this.socket.write(data);
+    this.socket.write(encryptedData);
   }
 
   public sendHandshake(): void {

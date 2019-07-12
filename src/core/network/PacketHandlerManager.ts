@@ -1,7 +1,8 @@
-import NotFoundHandler from "../handlers/NotFoundHandler";
+import UnhandledHandler from "../handlers/UnhandledHandler";
 
 import { ClientPacketOpcode } from "./ClientPacketOpcode";
 import { PacketHandler, PacketHandlerCallback } from "./PacketHandler";
+import { Log } from "@core/utils/Log";
 
 export class PacketHandlerManager {
   private handlers: PacketHandlerCallback[];
@@ -15,7 +16,7 @@ export class PacketHandlerManager {
       return this.handlers[opcode!];
     }
 
-    return NotFoundHandler.handlePacket;
+    return UnhandledHandler.handlePacket;
   }
 
   public assignHandler(handler: PacketHandler): void {
@@ -25,7 +26,7 @@ export class PacketHandlerManager {
       const opcode = Handler.opcodes[i];
 
       if (typeof this.handlers[opcode!] !== "undefined") {
-        console.warn(
+        Log.warning(
           "Warning: Attempting to assign handler to an existing opcode.",
           { opcode, Handler },
         );

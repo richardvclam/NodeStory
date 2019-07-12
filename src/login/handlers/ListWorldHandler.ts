@@ -1,19 +1,16 @@
-import {
-  PacketHandler,
-  PacketHandlerCallback,
-} from "../../core/network/PacketHandler";
+import { PacketHandler, PacketHandlerCallback } from "@core/network";
 import { LoginClientOpcode } from "../constants/LoginClientOpcode";
 
 import loginServerConfig from "../../config/loginserver.config.json";
 import {
   endWorldInformation,
   worldInformation,
-} from "../packets/WorldListPacket";
+} from "../packets/ListWorldPacket";
 
-export default class WorldListHandler extends PacketHandler {
+export default class ListWorldHandler extends PacketHandler {
   public static opcodes = [
-    LoginClientOpcode.WorldList,
-    LoginClientOpcode.WorldRelist,
+    LoginClientOpcode.ListWorld,
+    LoginClientOpcode.RelistWorld,
   ];
 
   public static handlePacket: PacketHandlerCallback = async (

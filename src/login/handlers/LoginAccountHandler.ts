@@ -1,14 +1,12 @@
-import {
-  PacketHandler,
-  PacketHandlerCallback,
-} from "../../core/network/PacketHandler";
+import { PacketHandler, PacketHandlerCallback } from "@core/network";
+import { Log } from "@core/utils/Log";
 
 import { LoginClientOpcode } from "../constants/LoginClientOpcode";
 import {
   ELoginResult,
   loginFailed,
   loginSuccess,
-} from "../packets/AccountLoginPacket";
+} from "../packets/LoginAccountPacket";
 
 import {
   checkPassword,
@@ -18,8 +16,8 @@ import {
 
 import loginServerConfig from "../../config/loginserver.config.json";
 
-export default class AccountLoginHandler extends PacketHandler {
-  public static opcodes = [LoginClientOpcode.AccountLogin];
+export default class LoginAccountHandler extends PacketHandler {
+  public static opcodes = [LoginClientOpcode.LoginAccount];
 
   public static handlePacket: PacketHandlerCallback = async (
     client,
@@ -32,7 +30,7 @@ export default class AccountLoginHandler extends PacketHandler {
     try {
       account = await findAccountByUsername(username);
     } catch (err) {
-      console.error(err);
+      Log.error(err);
     }
 
     // Account was not found
@@ -45,7 +43,7 @@ export default class AccountLoginHandler extends PacketHandler {
         try {
           account = await createAccount(username, password);
         } catch (err) {
-          console.error(err);
+          Log.error(err);
         }
       }
     }
@@ -68,7 +66,7 @@ export default class AccountLoginHandler extends PacketHandler {
     }
 
     // Account looks to be good to login!
-    console.log(`User logged in: ${account.username}`);
+    Log.info(`User logged in: ${account.username}`);
     return client.sendPacket(loginSuccess(account));
   };
 }

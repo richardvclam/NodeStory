@@ -85,4 +85,8 @@ export class PacketReader {
   public skip(length: number): void {
     this.offset += length;
   }
+
+  public getBuffer(): Buffer {
+    return this.buffer;
+  }
 }

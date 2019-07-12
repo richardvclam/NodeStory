@@ -1,35 +1,44 @@
 import fs from "fs";
-
 import net from "net";
 import path from "path";
 
-import { Client } from "../core/Client";
-import { PacketHandlerManager } from "../core/network/PacketHandlerManager";
+import { Client } from "@core/Client";
+import { PacketHandlerManager } from "@core/network";
+import { Log } from "@core/utils/Log";
 
 import loginServerConfig from "../config/loginserver.config.json";
-import serverConfig from "../config/server.config.json";
 
 export class LoginServer {
   private packetHandlerManager: PacketHandlerManager;
+  private server: net.Server;
 
   constructor() {
     this.packetHandlerManager = new PacketHandlerManager();
+
+    this.server = this.createServer();
+  }
+
+  public init() {
+    Log.info(`Initializing login server.`);
+
+    this.assignPacketHandlers();
   }
 
   public start() {
-    console.log(`Initializing login server.`);
-
-    const { version, subversion, locale } = serverConfig;
     const { port } = loginServerConfig;
 
-    this.assignPacketHandlers();
+    this.server.listen(port, () => {
+      Log.info(`Login server is listening at port ${port}`);
+    });
+  }
 
+  private createServer() {
     const server = net.createServer((socket) => {
-      console.log("Client connected.");
+      Log.info("Client connected.");
 
       const client = new Client(socket);
 
-      socket.on("data", (packet) => {
+      socket.on("data", async (packet) => {
         socket.pause();
 
         const reader = client.readPacket(packet);
@@ -41,7 +50,7 @@ export class LoginServer {
           try {
             handler(client, reader);
           } catch (err) {
-            console.error(err);
+            Log.error(err);
           }
         }
 
@@ -49,23 +58,21 @@ export class LoginServer {
       });
 
       socket.on("end", () => {
-        console.log("Client ended.");
+        Log.info("Client ended.");
       });
 
       socket.on("close", () => {
-        console.log("Client closed.");
+        Log.info("Client closed.");
       });
 
       socket.on("error", (error) => {
-        console.log("Client errored.", error);
+        Log.info("Client errored.", error);
       });
 
       client.sendHandshake();
     });
 
-    server.listen(port, () => {
-      console.log(`Login server is listening at port ${port}`);
-    });
+    return server;
   }
 
   private assignPacketHandlers() {
