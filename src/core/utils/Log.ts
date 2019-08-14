@@ -1,10 +1,7 @@
-import winston, { addColors, createLogger, format, transports } from "winston";
-
-addColors(winston.config.syslog.colors);
+import { createLogger, format, transports } from "winston";
 
 export const Log = createLogger({
   level: "info",
-  levels: winston.config.syslog.levels,
   format: format.combine(
     format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",

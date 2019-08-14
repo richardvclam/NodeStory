@@ -54,7 +54,7 @@ export class Client {
 
     const header = generateHeader(this.remoteIV, packet.getOffset(), version);
 
-    this.socket.write(header);
+    // this.socket.write(header);
 
     const data = packet.getBuffer();
     Log.log("debug", `[SEND] ${data.toJSON().data} ${data.toString()}`);
@@ -62,7 +62,10 @@ export class Client {
     const encryptedData = encryptData(data, this.remoteIV);
     this.remoteIV = morphIV(this.remoteIV);
 
-    this.socket.write(encryptedData);
+    // this.socket.write(encryptedData);
+
+    const payload = Buffer.concat([header, encryptedData]);
+    this.socket.write(payload);
   }
 
   public sendHandshake(): void {

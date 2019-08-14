@@ -26,7 +26,7 @@ export class PacketHandlerManager {
       const opcode = Handler.opcodes[i];
 
       if (typeof this.handlers[opcode!] !== "undefined") {
-        Log.warning(
+        Log.warn(
           "Warning: Attempting to assign handler to an existing opcode.",
           { opcode, Handler },
         );

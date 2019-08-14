@@ -1,7 +1,10 @@
 export enum LoginClientOpcode {
-  LoginAccount = 0x01,
-  RelistWorld = 0x04,
-  SelectWorld = 0x05,
-  WorldStatus = 0x06,
-  ListWorld = 0x0b,
+  LoginAccount = 1,
+  RelistWorld = 4,
+  SelectWorld = 5,
+  WorldStatus = 6,
+  ListWorld = 11,
+  CheckCharacterName = 21,
+  CreateCharacter = 22,
+  DeleteCharacter = 23,
 }

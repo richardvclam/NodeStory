@@ -33,22 +33,31 @@ export class LoginServer {
   }
 
   private createServer() {
-    const server = net.createServer((socket) => {
+    const server = net.createServer();
+
+    server.on("connection", (socket) => {
+      // console.log("socket", socket);
       Log.info("Client connected.");
+
+      server.getConnections((error, count) => {
+        Log.info(`Number of concurrent connections to the server: ${count}`);
+      });
 
       const client = new Client(socket);
 
+      console.log("Buffer size : " + socket.bufferSize);
+
       socket.on("data", async (packet) => {
+        // Pausing socket to throttle the amount of data coming in
         socket.pause();
 
         const reader = client.readPacket(packet);
 
         if (reader) {
-          const opcode = reader.readUShort();
-          const handler = this.packetHandlerManager.getHandler(opcode);
-
           try {
-            handler(client, reader);
+            const opcode = reader.readUShort();
+            const handler = this.packetHandlerManager.getHandler(opcode);
+            await handler(client, reader);
           } catch (err) {
             Log.error(err);
           }
@@ -70,6 +79,10 @@ export class LoginServer {
       });
 
       client.sendHandshake();
+    });
+
+    server.on("error", (err) => {
+      Log.error(err);
     });
 
     return server;

@@ -10,4 +10,4 @@ export abstract class PacketHandler {
 export type PacketHandlerCallback = (
   client: Client,
   packet: PacketReader,
-) => void;
+) => Promise<void>;

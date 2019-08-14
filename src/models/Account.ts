@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model } from "mongoose";
+import { Document, Model, model, Schema } from "mongoose";
 
 export interface IAccount {
   username: string;
