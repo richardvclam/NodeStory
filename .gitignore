@@ -3,3 +3,8 @@ node_modules
 logs
 
 .vscode
+
+lerna-debug.log
+npm-debug.log
+packages/*/lib
+.idea

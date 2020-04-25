@@ -1,0 +1,35 @@
+{
+  "name": "@nodestory/nodestory",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "richardvclam <richardvclam@gmail.com>",
+  "homepage": "https://github.com/richardvclam/nodestory#readme",
+  "license": "ISC",
+  "main": "lib/nodestory.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardvclam/nodestory.git"
+  },
+  "scripts": {
+    "start": "ts-node src/main.ts",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/richardvclam/nodestory/issues"
+  },
+  "devDependencies": {
+    "ts-node": "^8.9.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@nodestory/core": "^0.0.0",
+    "bcrypt": "^4.0.1"
+  }
+}
