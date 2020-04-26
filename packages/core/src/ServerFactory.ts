@@ -1,4 +1,5 @@
 import { IClientInfo } from './Client';
+import { IPacketHandler } from './network';
 import { IServerCryptoConfig, Server } from './Server';
 
 export class ServerFactoryStatic {
@@ -6,9 +7,9 @@ export class ServerFactoryStatic {
     port: number,
     clientConfig: IClientInfo,
     cryptoConfig: IServerCryptoConfig,
-    modules: any,
+    handlers: IPacketHandler[],
   ) {
-    return new Server(port, clientConfig, cryptoConfig, modules);
+    return new Server(port, clientConfig, cryptoConfig, handlers);
   }
 }
 

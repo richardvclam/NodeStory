@@ -1,17 +1,13 @@
-import { Log, PacketHandler, PacketHandlerCallback } from '@nodestory/core';
+import { createPacketHandler, Log } from '@nodestory/core';
 
 import loginServerConfig from '../../../config/loginserver.config.json';
 import { LoginClientOpcode } from '../../constants/LoginClientOpcode';
 import { checkPassword, createAccount, findAccountByUsername } from '../../services/AccountService';
 import { ELoginResult, loginFailed, loginSuccess } from './LoginAccount.packet';
 
-export default class LoginAccountHandler extends PacketHandler {
-  public static opcodes = [LoginClientOpcode.LoginAccount];
-
-  public static handlePacket: PacketHandlerCallback = async (
-    client,
-    packet,
-  ) => {
+export default createPacketHandler(
+  [LoginClientOpcode.LoginAccount],
+  async (client, packet) => {
     const username = packet.readString();
     const password = packet.readString();
 
@@ -57,5 +53,5 @@ export default class LoginAccountHandler extends PacketHandler {
     // Account looks to be good to login!
     Log.info(`User logged in: ${account.username}`);
     return client.sendPacket(loginSuccess(account));
-  };
-}
+  },
+);

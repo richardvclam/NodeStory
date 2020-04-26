@@ -3,7 +3,7 @@ import { ServerFactory } from '@nodestory/core';
 import clientConfig from '../config/client.config.json';
 import cryptoConfig from '../config/crypto.config.json';
 import loginServerConfig from '../config/loginserver.config.json';
-import modules from './modules';
+import handlers from './handlers';
 
 export const LoginServer = ServerFactory.createServer(
   loginServerConfig.port,
@@ -11,5 +11,5 @@ export const LoginServer = ServerFactory.createServer(
   {
     aesKey: cryptoConfig.aesKey,
   },
-  modules,
+  handlers,
 );

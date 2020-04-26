@@ -1,15 +1,11 @@
-import { PacketHandler, PacketHandlerCallback } from '@nodestory/core';
+import { createPacketHandler } from '@nodestory/core';
 
 import { LoginClientOpcode } from '../../constants/LoginClientOpcode';
 import { selectWorld, selectWorldError } from './SelectWorld.packet';
 
-export default class SelectWorldHandler extends PacketHandler {
-  public static opcodes = [LoginClientOpcode.SelectWorld];
-
-  public static handlePacket: PacketHandlerCallback = async (
-    client,
-    packet,
-  ) => {
+export default createPacketHandler(
+  [LoginClientOpcode.SelectWorld],
+  async (client, packet) => {
     const a = packet.readUByte();
     const worldId = packet.readUByte();
     const channelId = packet.readUByte();
@@ -19,5 +15,5 @@ export default class SelectWorldHandler extends PacketHandler {
     }
 
     return client.sendPacket(selectWorld(worldId, channelId));
-  };
-}
+  },
+);

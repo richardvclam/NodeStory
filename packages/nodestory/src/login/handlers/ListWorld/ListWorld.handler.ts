@@ -1,19 +1,12 @@
-import { PacketHandler, PacketHandlerCallback } from '@nodestory/core';
+import { createPacketHandler } from '@nodestory/core';
 
 import loginServerConfig from '../../../config/loginserver.config.json';
 import { LoginClientOpcode } from '../../constants/LoginClientOpcode';
 import { endWorldInformation, worldInformation } from './ListWorld.packet';
 
-export default class ListWorldHandler extends PacketHandler {
-  public static opcodes = [
-    LoginClientOpcode.ListWorld,
-    LoginClientOpcode.RelistWorld,
-  ];
-
-  public static handlePacket: PacketHandlerCallback = async (
-    client,
-    packet,
-  ) => {
+export default createPacketHandler(
+  [LoginClientOpcode.ListWorld, LoginClientOpcode.RelistWorld],
+  async (client, packet) => {
     const { worlds } = loginServerConfig;
 
     worlds.forEach((world) => {
@@ -21,5 +14,5 @@ export default class ListWorldHandler extends PacketHandler {
     });
 
     client.sendPacket(endWorldInformation());
-  };
-}
+  },
+);
