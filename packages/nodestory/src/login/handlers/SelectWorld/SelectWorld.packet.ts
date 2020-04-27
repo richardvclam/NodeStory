@@ -1,18 +1,26 @@
+import { ICharacterModel } from 'core/src/models/Character';
+
 import { PacketWriter } from '@nodestory/core';
 
+import { serializeCharacter } from '../../../modules/Character/Character.packet';
 import { LoginServerOpcode } from '../../constants/LoginServerOpcode';
 
-export function selectWorld(worldId: number, channelId: number): PacketWriter {
+export function selectWorld(
+  worldId: number,
+  channelId: number,
+  characters: ICharacterModel[],
+): PacketWriter {
   const packet = new PacketWriter(LoginServerOpcode.SelectWorldResult);
   packet.writeUByte(0);
 
   // Characters
-  packet.writeUByte(0); // Character length
+  packet.writeUByte(characters.length); // Character length
+  characters.forEach((character) => {
+    packet.append(serializeCharacter(character));
+  });
 
-  // character loop
-
-  packet.writeUByte(1); // PIC registered
-  packet.writeUInt(6); // Max characters
+  packet.writeUByte(0); // PIC registered
+  packet.writeUInt(8); // Max characters
 
   return packet;
 }

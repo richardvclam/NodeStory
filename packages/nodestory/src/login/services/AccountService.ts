@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { Account, IAccountModel } from '../../models/Account';
+import { Account, IAccountModel } from '../../../../core/src/models/Account';
 
 const saltRounds = 10;
 

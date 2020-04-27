@@ -52,6 +52,7 @@ export default createPacketHandler(
 
     // Account looks to be good to login!
     Log.info(`User logged in: ${account.username}`);
+    client.account = account;
     return client.sendPacket(loginSuccess(account));
   },
 );

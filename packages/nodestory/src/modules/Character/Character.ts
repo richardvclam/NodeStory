@@ -1,0 +1,31 @@
+// @ts-nocheck
+export class Character {
+  id: number;
+  name: string;
+  gender: number;
+  skin: number;
+  face: number;
+  hair: number;
+  hairColor: number;
+  level: number;
+  job: number;
+  str: number;
+  dex: number;
+  int: number;
+  luk: number;
+  hp: number;
+  maxHp: number;
+  mp: number;
+  maxMp: number;
+  remainingAp: number;
+  remainingSp: number;
+  exp: number;
+  fame: number;
+  gachaExp: number;
+  map: number;
+  mapSpawn: number;
+  rank: number;
+  rankMove: number;
+  jobRank: number;
+  jobRankMove: number;
+}

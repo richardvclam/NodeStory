@@ -1,5 +1,6 @@
 import { Socket } from 'net';
 
+import { IAccountModel } from './models/Account';
 import { PacketCrypto } from './network/PacketCrypto';
 import { PacketReader } from './network/PacketReader';
 import { PacketWriter } from './network/PacketWriter';
@@ -25,6 +26,10 @@ export class Client {
 
   private localCrypto: PacketCrypto;
   private remoteCrypto: PacketCrypto;
+
+  public account?: IAccountModel;
+  public world?: number;
+  public channel?: number;
 
   constructor(
     private readonly socket: Socket,
@@ -57,7 +62,7 @@ export class Client {
 
     const data = this.localCrypto.decryptData(block);
 
-    Log.log("debug", `[IN]  ${data.toJSON().data}\n${data.toString()}`);
+    Log.log("debug", `[RECV] ${data.toString("hex")}\n${data.toString()}`);
 
     const reader = new PacketReader(data);
 
@@ -70,7 +75,7 @@ export class Client {
     // this.socket.write(header);
 
     const data = packet.getBuffer();
-    Log.log("debug", `[OUT] ${data.toJSON().data}\n${data.toString()}`);
+    Log.log("debug", `[SEND] ${data.toString("hex")}\n${data.toString()}`);
 
     const encryptedData = this.remoteCrypto.encryptData(data);
 

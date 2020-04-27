@@ -37,9 +37,12 @@ export class PacketWriter {
     return this;
   }
 
-  public writeLong(value: bigint): PacketWriter {
+  public writeLong(value: number | bigint): PacketWriter {
     this.realloc(8);
-    this.buffer.writeBigInt64LE(value, this.offset);
+    this.buffer.writeBigInt64LE(
+      typeof value === "bigint" ? value : BigInt(value),
+      this.offset,
+    );
     this.offset += 8;
 
     return this;
@@ -112,6 +115,16 @@ export class PacketWriter {
     for (let i = 0, len = values.length; i < len; i++) {
       this.writeUByte(values[i]);
     }
+
+    return this;
+  }
+
+  public append(packetWriter: PacketWriter): PacketWriter {
+    // const newOffset = this.offset + packetWriter.offset;
+    // this.buffer = Buffer.concat([this.buffer, packetWriter.buffer], newOffset);
+    // this.offset = newOffset;
+
+    this.writeBytes(packetWriter.getBuffer());
 
     return this;
   }

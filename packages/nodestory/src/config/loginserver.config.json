@@ -9,7 +9,7 @@
       "publicIP": "127.0.0.1",
       "portStart": 8500,
       "ribbon": 2,
-      "channels": 1,
+      "channels": 2,
       "eventMessage": "",
       "dialogs": [],
       "disableCharacterCreation": false

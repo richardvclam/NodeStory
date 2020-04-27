@@ -1,4 +1,4 @@
-import { Character, ICharacterModel } from '../../models/Character';
+import { Character, ICharacter, ICharacterModel } from '../../../../core/src/models/Character';
 
 export async function findCharacterByName(
   name: string,
@@ -7,7 +7,14 @@ export async function findCharacterByName(
 }
 
 export async function createCharacter(
-  name: string,
+  data: ICharacter,
 ): Promise<ICharacterModel | null> {
-  return Character.create({ name });
+  return Character.create(data);
+}
+
+export async function getCharacters(
+  accountId: string,
+  worldId: number,
+): Promise<ICharacterModel[]> {
+  return Character.find({ _accountId: accountId, world: worldId });
 }

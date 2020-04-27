@@ -1,6 +1,6 @@
 import { PacketWriter } from '@nodestory/core';
 
-import { IAccountModel } from '../../../models/Account';
+import { IAccountModel } from '../../../../../core/src/models/Account';
 import { LoginServerOpcode } from '../../constants/LoginServerOpcode';
 
 export enum ELoginResult {
