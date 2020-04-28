@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import { Character, ICharacter, ICharacterModel } from '../../../../core/src/models/Character';
 
 export async function findCharacterByName(
@@ -9,7 +11,8 @@ export async function findCharacterByName(
 export async function createCharacter(
   data: ICharacter,
 ): Promise<ICharacterModel | null> {
-  return Character.create(data);
+  const randomId = parseInt(crypto.randomBytes(4).toString("hex"), 16);
+  return Character.create({ ...data, _id: randomId });
 }
 
 export async function getCharacters(

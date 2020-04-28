@@ -37,6 +37,7 @@ export interface ICharacterModel extends ICharacter, Document {}
 
 export const CharacterSchema = new Schema(
   {
+    _id: Number,
     _accountId: Schema.Types.ObjectId,
     world: { type: Number, required: true },
     name: { type: String, required: true, unique: true },
@@ -68,6 +69,7 @@ export const CharacterSchema = new Schema(
     },
   },
   {
+    _id: false,
     timestamps: true,
   },
 );

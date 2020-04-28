@@ -19,7 +19,7 @@ export function selectWorld(
     packet.append(serializeCharacter(character));
   });
 
-  packet.writeUByte(0); // PIC registered
+  packet.writeUByte(2); // PIC options 0, 1, 2 - 2 is disabled
   packet.writeUInt(8); // Max characters
 
   return packet;

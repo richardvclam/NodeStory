@@ -7,6 +7,10 @@ import { PacketHandlerManager } from './network/PacketHandlerManager';
 import { AESEncryption } from './security/AESEncryption';
 import { Log } from './utils/Log';
 
+export interface IServerConfig {
+  port: number;
+  name: string;
+}
 export interface IServerCryptoConfig {
   aesKey: number[];
 }
@@ -17,7 +21,7 @@ export class Server {
   private readonly aes: AESEncryption;
 
   constructor(
-    private readonly port: number,
+    private readonly serverConfig: IServerConfig,
     private readonly clientConfig: IClientInfo,
     private readonly cryptoConfig: IServerCryptoConfig,
     private readonly modules: any,
@@ -29,14 +33,16 @@ export class Server {
   }
 
   public init() {
-    Log.info(`Initializing login server.`);
+    Log.info(`Initializing ${this.serverConfig.name}.`);
 
     this.assignPacketHandlers(this.modules);
   }
 
   public start() {
-    this.server.listen(this.port, () => {
-      Log.info(`Login server is listening at port ${this.port}`);
+    this.server.listen(this.serverConfig.port, () => {
+      Log.info(
+        `${this.serverConfig.name} is listening at port ${this.serverConfig.port}`,
+      );
     });
   }
 
@@ -45,15 +51,15 @@ export class Server {
 
     server.on("connection", (socket) => {
       // console.log("socket", socket);
-      Log.info("Client connected.");
+      Log.info(`Client connected to ${this.serverConfig.name}.`);
 
       server.getConnections((error, count) => {
-        Log.info(`Number of concurrent connections to the server: ${count}`);
+        Log.info(
+          `Number of concurrent connections to the ${this.serverConfig.name}: ${count}`,
+        );
       });
 
       const client = new Client(socket, this.clientConfig, { aes: this.aes });
-
-      console.log("Buffer size : " + socket.bufferSize);
 
       socket.on("data", async (packet) => {
         // Pausing socket to throttle the amount of data coming in

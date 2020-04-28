@@ -1,15 +1,15 @@
 import { IClientInfo } from './Client';
 import { IPacketHandler } from './network';
-import { IServerCryptoConfig, Server } from './Server';
+import { IServerConfig, IServerCryptoConfig, Server } from './Server';
 
 export class ServerFactoryStatic {
   public createServer(
-    port: number,
+    serverConfig: IServerConfig,
     clientConfig: IClientInfo,
     cryptoConfig: IServerCryptoConfig,
     handlers: IPacketHandler[],
   ) {
-    return new Server(port, clientConfig, cryptoConfig, handlers);
+    return new Server(serverConfig, clientConfig, cryptoConfig, handlers);
   }
 }
 

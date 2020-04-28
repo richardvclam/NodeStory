@@ -1,5 +1,6 @@
 import { NodeStoryFactory } from '@nodestory/core';
 
+import { ChannelServer } from './channel/ChannelServer';
 import clientConfig from './config/client.config.json';
 import cryptoConfig from './config/crypto.config.json';
 import databaseConfig from './config/database.config.json';
@@ -17,7 +18,7 @@ async function bootstrap() {
       databaseUrl: databaseConfig.url,
     },
     LoginServer,
-    // WorldServer,
+    ChannelServer,
   );
   app.start();
 }

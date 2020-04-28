@@ -29,8 +29,8 @@ export function loginSuccess(account: IAccountModel) {
   writer.writeUInt(0);
 
   // Pic info
-  writer.writeUByte(1); // NOTE: 1 seems to not do anything.
-  writer.writeUByte(1);
+  writer.writeUByte(1); // 0 = Pin-System Enabled, 1 = Disabled
+  writer.writeUByte(2); // 0 = Register PIC, 1 = Ask for PIC, 2 = Disabled
 
   return writer;
 }

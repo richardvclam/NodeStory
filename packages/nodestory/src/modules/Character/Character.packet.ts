@@ -24,7 +24,7 @@ export function serializeCharacter(character: ICharacterModel): PacketWriter {
 export function serializeCharacterStats(character: ICharacterModel) {
   const packet = new PacketWriter();
 
-  packet.writeUInt(parseInt(String(character._id).substr(0, 8), 16));
+  packet.writeUInt(character._id);
   packet.writeString(character.name, 13);
   packet.writeByte(character.gender);
   packet.writeByte(character.skin);

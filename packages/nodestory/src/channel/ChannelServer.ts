@@ -5,11 +5,8 @@ import cryptoConfig from '../config/crypto.config.json';
 import loginServerConfig from '../config/loginserver.config.json';
 import handlers from './handlers';
 
-export const LoginServer = ServerFactory.createServer(
-  {
-    name: "LoginServer",
-    port: loginServerConfig.port,
-  },
+export const ChannelServer = ServerFactory.createServer(
+  { name: "ChannelServer-1", port: loginServerConfig.worlds[0].portStart },
   clientConfig,
   {
     aesKey: cryptoConfig.aesKey,

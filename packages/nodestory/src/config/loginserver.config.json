@@ -6,7 +6,7 @@
       "id": 0,
       "name": "Scania",
       "privateIP": "127.0.0.1",
-      "publicIP": "127.0.0.1",
+      "publicIP": "192.168.86.225",
       "portStart": 8500,
       "ribbon": 2,
       "channels": 2,

@@ -6,4 +6,5 @@ export enum LoginServerOpcode {
   CheckCharacterNameResult = 13,
   CreateCharacterResult = 14,
   DeleteCharacterResult = 15,
+  EnterChannel = 0x0c,
 }
