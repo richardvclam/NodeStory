@@ -1,10 +1,10 @@
 import { PacketWriter } from '@nodestory/core';
-import { ICharacterModel } from '@nodestory/core/src/models/Character';
+import { ICharacterDocument } from '@nodestory/core/src/models/Character';
 
 import { serializeCharacterStats } from '../../../modules/Character/Character.packet';
 import { ChannelServerOpcode } from '../../constants/ChannelServerOpcode';
 
-export function loadCharacter(character: ICharacterModel) {
+export function loadCharacter(character: ICharacterDocument) {
   const packet = new PacketWriter(ChannelServerOpcode.LoadCharacterResponse);
   packet.writeUInt(0); // channel id
   packet.writeUByte(1); // portal count

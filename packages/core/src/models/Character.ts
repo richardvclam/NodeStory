@@ -1,7 +1,10 @@
-import { Document, Model, model, Schema, Types } from 'mongoose';
+import { Document, model, Schema, Types } from 'mongoose';
 
-export interface ICharacter {
-  _accountId: Types.ObjectId;
+import { IAccountModel } from './Account';
+
+export interface ICharacterDocument extends Document {
+  _id: Number;
+  _accountId: IAccountModel["_id"];
   name: string;
   gender: number;
   skin: number;
@@ -33,12 +36,10 @@ export interface ICharacter {
   jobRankMove?: number;
 }
 
-export interface ICharacterModel extends ICharacter, Document {}
-
 export const CharacterSchema = new Schema(
   {
     _id: Number,
-    _accountId: Schema.Types.ObjectId,
+    _accountId: { type: Schema.Types.ObjectId, ref: "Account", required: true },
     world: { type: Number, required: true },
     name: { type: String, required: true, unique: true },
     gender: { type: Number, required: true },
@@ -74,7 +75,7 @@ export const CharacterSchema = new Schema(
   },
 );
 
-export const Character: Model<ICharacterModel> = model<ICharacterModel>(
+export const CharacterModel = model<ICharacterDocument>(
   "Character",
   CharacterSchema,
 );

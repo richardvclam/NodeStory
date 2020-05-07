@@ -1,8 +1,10 @@
-import { ICharacterModel } from 'core/src/models/Character';
+import { ICharacterDocument } from 'core/src/models/Character';
 
 import { PacketWriter } from '@nodestory/core';
 
-export function serializeCharacter(character: ICharacterModel): PacketWriter {
+export function serializeCharacter(
+  character: ICharacterDocument,
+): PacketWriter {
   const packet = new PacketWriter();
 
   packet.append(serializeCharacterStats(character));
@@ -21,7 +23,7 @@ export function serializeCharacter(character: ICharacterModel): PacketWriter {
   return packet;
 }
 
-export function serializeCharacterStats(character: ICharacterModel) {
+export function serializeCharacterStats(character: ICharacterDocument) {
   const packet = new PacketWriter();
 
   packet.writeUInt(character._id);
@@ -57,7 +59,7 @@ export function serializeCharacterStats(character: ICharacterModel) {
 }
 
 export function serializeCharacterAppearance(
-  character: ICharacterModel,
+  character: ICharacterDocument,
   isMegaphone: boolean = false,
 ): PacketWriter {
   const packet = new PacketWriter();

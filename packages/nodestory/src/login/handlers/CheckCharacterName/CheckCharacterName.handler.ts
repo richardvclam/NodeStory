@@ -10,7 +10,7 @@ export default createPacketHandler(
     const name = packet.readString();
 
     const character = await findCharacterByName(name);
-    const isAvailable = !character;
+    const isAvailable = !!character;
 
     return client.sendPacket(nameAvailability(name, isAvailable));
   },

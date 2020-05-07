@@ -5,7 +5,7 @@ import { LoginClientOpcode } from '../../constants/LoginClientOpcode';
 import { enterChannel } from './SelectCharacter.packet';
 
 export default createPacketHandler(
-  [LoginClientOpcode.SelectCharacter],
+  LoginClientOpcode.SelectCharacter,
   async (client, packet) => {
     if (!client.account) {
       // TODO: handle disconnect
@@ -15,12 +15,6 @@ export default createPacketHandler(
     const characterId = packet.readUInt();
     const mac = packet.readString();
     const hwid = packet.readString();
-
-    console.log("select character", {
-      characterId,
-      mac,
-      hwid,
-    });
 
     const world = loginConfig.worlds.find((world) => world.id === client.world);
 
@@ -33,10 +27,6 @@ export default createPacketHandler(
     }
 
     const { publicIP, portStart } = world;
-
-    console.log("public ip", publicIP);
-    console.log("portStart", portStart);
-    console.log("portStart + client.channel", portStart + client.channel);
 
     return client.sendPacket(
       enterChannel(publicIP, portStart + client.channel, characterId),

@@ -1,4 +1,4 @@
-import { ICharacterModel } from 'core/src/models/Character';
+import { ICharacterDocument } from 'core/src/models/Character';
 
 import { PacketWriter } from '@nodestory/core';
 
@@ -8,7 +8,7 @@ import { LoginServerOpcode } from '../../constants/LoginServerOpcode';
 export function selectWorld(
   worldId: number,
   channelId: number,
-  characters: ICharacterModel[],
+  characters: ICharacterDocument[],
 ): PacketWriter {
   const packet = new PacketWriter(LoginServerOpcode.SelectWorldResult);
   packet.writeUByte(0);

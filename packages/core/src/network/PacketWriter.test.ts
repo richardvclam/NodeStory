@@ -49,8 +49,6 @@ describe("PacketWriter", () => {
     const packet = new PacketWriter();
     packet.writeUInt(1458854438);
 
-    console.log("before", packet);
-
     const packet2 = new PacketWriter();
     packet2.writeUInt(1458854438);
 
@@ -74,8 +72,6 @@ describe("PacketWriter", () => {
       0xf4,
       0x56,
     ];
-
-    console.log("after", packet);
 
     expect(packet.toByteArray()).toEqual(expectedBuf);
   });
