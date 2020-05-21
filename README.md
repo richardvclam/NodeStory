@@ -6,9 +6,10 @@ NodeStory is a MapleStory server emulator for the Node.js runtime. This is a hob
 
 NodeStory will be taking a modern and SOLID approach for its architecture. My focus will be writing a maintainable server framework that allow developers to easily modify and extend functionalities.
 
-## Goals
-
-- Create a "core" package
+## Progress so far
+- Auto registration
+- Character creation
+- Spawn in map
 
 ## Tech Stack
 
